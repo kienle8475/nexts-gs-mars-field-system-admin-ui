@@ -1,0 +1,279 @@
+"use client";
+import { useMemo, useState } from "react";
+import { Button, DatePicker, Modal, Pagination, Select, Spin, Table, Tag, Tooltip } from "antd";
+import { CheckCircleTwoTone, DownloadOutlined } from "@ant-design/icons";
+import dayjs, { Dayjs } from "dayjs";
+import { OutletOption, useOutletsByProvince } from "@/services/outlet/list-option";
+import { ProfileOption, useStaffProfileOptions } from "@/services/profile/list-staff-option";
+import { useAttendanceReport } from "@/services/attendance/list";
+import { ProvinceOption, useAllProvincesOptions } from "@/services/province/list-option";
+
+const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST;
+
+const AttendanceSection = () => {
+  const [outletType] = useState<string>("BOTH");
+  const [selectedOutletId, setSelectedOutletId] = useState<string>();
+  const [selectedStaffId, setSelectedStaffId] = useState<string>();
+  const [page, setPage] = useState<number>(1);
+  const [pageSize, setPageSize] = useState<number>(10);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState<boolean>(false);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string>();
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
+
+  // === Gọi API outlet dựa vào selectedProvince ===
+  const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(Number(selectedProvinceId));
+  const { data: provinceOptions = [], isLoading: provinceLoading } = useAllProvincesOptions();
+  const { data: staffProfileOptions = [], isLoading: staffProfileLoading } = useStaffProfileOptions();
+  const queryParams = useMemo(() => {
+    return {
+      ...(selectedProvinceId !== undefined && { provinceId: selectedProvinceId }),
+      ...(selectedOutletId !== undefined && { outletId: selectedOutletId }),
+      ...(selectedStaffId !== undefined && { staffId: selectedStaffId }),
+      date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      page: page - 1,
+      size: pageSize,
+    };
+  }, [selectedProvinceId, selectedOutletId, selectedStaffId, selectedDate, page, pageSize]);
+
+  const { data, isFetching } = useAttendanceReport(queryParams);
+
+  const columns = [
+    {
+      title: "Outlet",
+      render: (_: any, record: { outlet: { name: string; province: string; } }) => (
+        <div>
+          <div><b>{record.outlet.name}</b></div>
+          <div className="text-gray-500 text-sm">{record.outlet.province}</div>
+        </div>
+      )
+    },
+    {
+      title: "Thời Gian",
+      render: (_: any, record: { startTime: string; endTime: string; }) => (
+        <div>
+          <div><b>Bắt đầu:</b> {record.startTime ? dayjs(record.startTime).format("HH:mm DD/MM/YYYY") : ""}</div>
+          <div><b>Kết thúc:</b> {record.endTime ? dayjs(record.endTime).format("HH:mm DD/MM/YYYY") : ""}</div>
+        </div>
+      )
+    },
+    {
+      title: "Ca",
+      dataIndex: "shiftName",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "attendances",
+      render: (att: any) => {
+        const hasAttendance = att.length > 0;
+        return (
+          <Tag color={hasAttendance ? "green" : "red"}>
+            {hasAttendance ? "Đã Check-in" : "Chưa Check-in"}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "Chi tiết",
+      render: (_: any, record: { attendances: any; }) => (
+        <div className="flex flex-wrap gap-3">
+          {(record.attendances || []).map((att: any) => (
+            <div key={att.id} className="p-2 border rounded-md bg-gray-50 shadow-sm">
+              <div className="font-semibold text-sm">{att.staff?.fullName}</div>
+              <div className="text-xs text-gray-500">
+                🕘 {dayjs(att.checkinTime).format("HH:mm DD/MM")} → {dayjs(att.checkoutTime).format("HH:mm DD/MM")}
+              </div>
+              <div className="flex gap-2 mt-1">
+                {att.checkinImage && (
+                  <img
+                    src={`${IMAGE_HOST}${att.checkinImage}`}
+                    alt="checkin"
+                    className="h-10 w-10 rounded object-cover cursor-pointer bg-white"
+                    onClick={() => {
+                      setImageLoading(true);
+                      setPreviewImage(`${IMAGE_HOST}${att.checkinImage}`);
+                    }}
+                  />
+                )}
+                {att.checkoutImage && (
+                  <img
+                    src={`${IMAGE_HOST}${att.checkoutImage}`}
+                    alt="checkout"
+                    className="h-10 w-10 rounded object-cover cursor-pointer bg-white"
+                    onClick={() => {
+                      setImageLoading(true);
+                      setPreviewImage(`${IMAGE_HOST}${att.checkoutImage}`);
+                    }}
+                  />
+                )}
+              </div>
+              <a
+                href={`https://maps.google.com/?q=${att.checkinLocation.lat},${att.checkinLocation.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-xs text-blue-600 underline mt-1"
+              >
+                View Map
+              </a>
+              <div className="flex gap-1 mt-1">
+                <Tooltip title="Sale Report">
+                  <CheckCircleTwoTone twoToneColor={att.saleReport ? "#52c41a" : "#d9d9d9"} />
+                </Tooltip>
+                <Tooltip title="OOS Report">
+                  <CheckCircleTwoTone twoToneColor={att.oosReport ? "#1890ff" : "#d9d9d9"} />
+                </Tooltip>
+                <Tooltip title="Sampling Report">
+                  <CheckCircleTwoTone twoToneColor={att.samplingReport ? "#fa8c16" : "#d9d9d9"} />
+                </Tooltip>
+                <Tooltip title="Out-of-position count">
+                  <Tag color={att.staffLeaves?.length > 0 ? "red" : "green"}>
+                    {att.staffLeaves?.length || 0}x
+                  </Tag>
+                </Tooltip>
+              </div>
+            </div>
+          ))}
+        </div>
+      )
+    }
+  ];
+
+
+  const handleDateChange = (date: Dayjs | null) => {
+    if (date) {
+      setSelectedDate(date.startOf("day"));
+      setPage(1);
+    }
+  };
+
+
+  const disableDate = (current: Dayjs) => {
+    return current > dayjs();
+  };
+
+  const handleApplyFilters = () => {
+    console.log(outletType, selectedOutletId, selectedDate);
+  };
+
+  const handleExportExcel = () => {
+    console.log(outletType, selectedOutletId, selectedDate);
+  };
+
+  const handleExportPDF = () => {
+    console.log(outletType, selectedOutletId, selectedDate);
+  };
+
+
+  return (
+    <section>
+      <div>
+        <div className="flex items-center gap-4 border-b border-b-border-low-emp bg-white px-6 py-6">
+          {/* Select Staff */}
+          <Select
+            showSearch
+            className="w-full md:w-1/4"
+            placeholder="Select PS"
+            value={selectedStaffId}
+            onChange={setSelectedStaffId}
+            allowClear
+            loading={staffProfileLoading}
+            options={staffProfileOptions.map((o: ProfileOption) => ({
+              label: o.name,
+              value: o.id,
+            }))}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+          />
+          {/* Select Province */}
+          <Select
+            showSearch
+            className="w-full md:w-1/4"
+            placeholder="Select Province"
+            value={selectedProvinceId}
+            onChange={setSelectedProvinceId}
+            allowClear
+            loading={provinceLoading}
+            options={provinceOptions.map((o: ProvinceOption) => ({
+              label: o.name,
+              value: o.id,
+            }))}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+          />
+
+          {/* Select Outlet */}
+          <Select
+            showSearch
+            className="w-full md:w-1/4"
+            placeholder="Select Outlet"
+            value={selectedOutletId}
+            onChange={setSelectedOutletId}
+            allowClear
+            loading={outletLoading}
+            options={outletOptions.map((o: OutletOption) => ({
+              label: o.name,
+              value: o.id,
+            }))}
+            filterOption={(input, option) =>
+              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            }
+          />
+
+          <DatePicker
+            className="w-full md:w-1/4"
+            value={selectedDate}
+            onChange={handleDateChange}
+            defaultValue={dayjs()}
+          />
+
+          <Button type="default" variant="outlined" icon={<DownloadOutlined />} onClick={handleExportExcel} >
+            Export Excel
+          </Button>
+          <Button type="default" danger variant="outlined" icon={<DownloadOutlined />} onClick={handleExportExcel} >
+            Export PPT
+          </Button>
+        </div>
+        <div className="p-6">
+          <Spin spinning={isFetching}>
+            <Table
+              dataSource={data?.content || []}
+              rowKey={(record) => record.shiftId}
+              pagination={{
+                current: page,
+                pageSize: pageSize,
+                total: data?.totalElements || 0,
+                showSizeChanger: true,
+                showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`,
+                onChange: (p, ps) => {
+                  setPage(p);
+                  setPageSize(ps);
+                },
+              }}
+              columns={columns}
+            />
+          </Spin>
+        </div>
+        <Modal
+          open={!!previewImage}
+          onCancel={() => setPreviewImage(null)}
+          footer={null}
+          centered
+          width={600}
+        >
+          <Spin spinning={imageLoading}>
+            <img
+              src={previewImage || ''}
+              alt="Preview"
+              className="w-full h-auto object-contain"
+              onLoad={() => setImageLoading(false)}
+            />
+          </Spin>
+        </Modal>
+      </div>
+    </section>
+  );
+};
+
+export default AttendanceSection;

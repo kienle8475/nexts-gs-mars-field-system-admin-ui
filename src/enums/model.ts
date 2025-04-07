@@ -1,0 +1,56 @@
+export enum UserRole {
+  USER = "USER",
+  DEVELOPER = "DEVELOPER",
+  ADMIN = "ADMIN",
+  SUPERADMIN = "SUPERADMIN",
+}
+
+
+export enum GameStatus {
+  COMPLETED = 'COMPLETED',
+  UNCOMPLETED = 'UNCOMPLETED',
+}
+
+export enum GameResult {
+  UNKNOWN = 'UNKNOWN',
+  WIN = 'WIN',
+  LOST = 'LOST',
+}
+
+export enum GameMode {
+  UNKNOWN = 'UNKNOWN',
+  AR = 'AR',
+  NON_AR = 'NON_AR',
+  AR_TRACK = 'AR_TRACK',
+}
+
+export enum PurchasesProduct {
+  HEINEKEN_00 = 'HEINEKEN_00',
+  HEINEKEN_SLIVER = 'HEINEKEN_SLIVER',
+  STRONGBOW_ORIGIN = 'STRONGBOW_ORIGIN',
+  HEINEKEN_FAMILY = "HEINEKEN_FAMILY",
+  TIGER_FAMILY = "TIGER_FAMILY",
+  STRONGBOW_FAMILY = "STRONGBOW_FAMILY",
+  SNOW_BEER_EDELWEISS = "SNOW_BEER_EDELWEISS",
+  BEER_VIET = "BEER_VIET",
+  LARUE_FAMILY = "LARUE_FAMILY",
+  DEFAULT = 'DEFAULT'
+}
+
+export enum PackType {
+  PACK_6 = 'PACK_6',
+  CASE = 'CASE',
+  PACK = 'PACK',
+  CAN = 'CAN',
+  DEFAULT = 'DEFAULT'
+}
+
+export enum Gift {
+
+}
+
+export enum Brand {
+  HEINEKEN = 'HEINEKEN',
+  TIGER = 'TIGER',
+  DEFAULT = 'DEFAULT'
+}
