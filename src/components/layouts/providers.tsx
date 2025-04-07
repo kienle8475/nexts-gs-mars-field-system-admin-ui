@@ -9,6 +9,7 @@ import { Spinner } from "../elements/spinner";
 import { Toaster as ToasterSonner } from "sonner";
 import { ConfigProvider } from "antd";
 import { lightTheme } from "@/config/antd-theme.config";
+import { WSProvider } from "@/contexts/ws.context";
 import "moment/locale/vi";
 
 const queryClient = new QueryClient();
@@ -34,7 +35,9 @@ const Providers = (props: ProvidersProps) => {
         <ErrorBoundary FallbackComponent={() => <></>}>
           <QueryClientProvider client={queryClient}>
             <AuthContextProvider>
-              <GlobalContextProvider>{children}</GlobalContextProvider>
+              <GlobalContextProvider>
+                <WSProvider>{children}</WSProvider>
+              </GlobalContextProvider>
             </AuthContextProvider>
 
             <Toaster

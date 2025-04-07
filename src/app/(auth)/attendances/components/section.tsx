@@ -7,10 +7,12 @@ import { OutletOption, useOutletsByProvince } from "@/services/outlet/list-optio
 import { ProfileOption, useStaffProfileOptions } from "@/services/profile/list-staff-option";
 import { useAttendanceReport } from "@/services/attendance/list";
 import { ProvinceOption, useAllProvincesOptions } from "@/services/province/list-option";
-
+import { useAutoPingPong } from "@/hooks/use-auto-ping-pong";
 const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST;
 
 const AttendanceSection = () => {
+  useAutoPingPong(5000); // auto ping pong every 5 seconds
+
   const [outletType] = useState<string>("BOTH");
   const [selectedOutletId, setSelectedOutletId] = useState<string>();
   const [selectedStaffId, setSelectedStaffId] = useState<string>();
@@ -22,9 +24,12 @@ const AttendanceSection = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
 
   // === Gọi API outlet dựa vào selectedProvince ===
-  const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(Number(selectedProvinceId));
+  const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(
+    Number(selectedProvinceId),
+  );
   const { data: provinceOptions = [], isLoading: provinceLoading } = useAllProvincesOptions();
-  const { data: staffProfileOptions = [], isLoading: staffProfileLoading } = useStaffProfileOptions();
+  const { data: staffProfileOptions = [], isLoading: staffProfileLoading } =
+    useStaffProfileOptions();
   const queryParams = useMemo(() => {
     return {
       ...(selectedProvinceId !== undefined && { provinceId: selectedProvinceId }),
@@ -41,21 +46,29 @@ const AttendanceSection = () => {
   const columns = [
     {
       title: "Outlet",
-      render: (_: any, record: { outlet: { name: string; province: string; } }) => (
+      render: (_: any, record: { outlet: { name: string; province: string } }) => (
         <div>
-          <div><b>{record.outlet.name}</b></div>
-          <div className="text-gray-500 text-sm">{record.outlet.province}</div>
+          <div>
+            <b>{record.outlet.name}</b>
+          </div>
+          <div className="text-sm text-gray-500">{record.outlet.province}</div>
         </div>
-      )
+      ),
     },
     {
       title: "Thời Gian",
-      render: (_: any, record: { startTime: string; endTime: string; }) => (
+      render: (_: any, record: { startTime: string; endTime: string }) => (
         <div>
-          <div><b>Bắt đầu:</b> {record.startTime ? dayjs(record.startTime).format("HH:mm DD/MM/YYYY") : ""}</div>
-          <div><b>Kết thúc:</b> {record.endTime ? dayjs(record.endTime).format("HH:mm DD/MM/YYYY") : ""}</div>
+          <div>
+            <b>Bắt đầu:</b>{" "}
+            {record.startTime ? dayjs(record.startTime).format("HH:mm DD/MM/YYYY") : ""}
+          </div>
+          <div>
+            <b>Kết thúc:</b>{" "}
+            {record.endTime ? dayjs(record.endTime).format("HH:mm DD/MM/YYYY") : ""}
+          </div>
         </div>
-      )
+      ),
     },
     {
       title: "Ca",
@@ -75,20 +88,21 @@ const AttendanceSection = () => {
     },
     {
       title: "Chi tiết",
-      render: (_: any, record: { attendances: any; }) => (
+      render: (_: any, record: { attendances: any }) => (
         <div className="flex flex-wrap gap-3">
           {(record.attendances || []).map((att: any) => (
-            <div key={att.id} className="p-2 border rounded-md bg-gray-50 shadow-sm">
-              <div className="font-semibold text-sm">{att.staff?.fullName}</div>
+            <div key={att.id} className="rounded-md border bg-gray-50 p-2 shadow-sm">
+              <div className="text-sm font-semibold">{att.staff?.fullName}</div>
               <div className="text-xs text-gray-500">
-                🕘 {dayjs(att.checkinTime).format("HH:mm DD/MM")} → {dayjs(att.checkoutTime).format("HH:mm DD/MM")}
+                🕘 {dayjs(att.checkinTime).format("HH:mm DD/MM")} →{" "}
+                {dayjs(att.checkoutTime).format("HH:mm DD/MM")}
               </div>
-              <div className="flex gap-2 mt-1">
+              <div className="mt-1 flex gap-2">
                 {att.checkinImage && (
                   <img
                     src={`${IMAGE_HOST}${att.checkinImage}`}
                     alt="checkin"
-                    className="h-10 w-10 rounded object-cover cursor-pointer bg-white"
+                    className="h-10 w-10 cursor-pointer rounded bg-white object-cover"
                     onClick={() => {
                       setImageLoading(true);
                       setPreviewImage(`${IMAGE_HOST}${att.checkinImage}`);
@@ -99,7 +113,7 @@ const AttendanceSection = () => {
                   <img
                     src={`${IMAGE_HOST}${att.checkoutImage}`}
                     alt="checkout"
-                    className="h-10 w-10 rounded object-cover cursor-pointer bg-white"
+                    className="h-10 w-10 cursor-pointer rounded bg-white object-cover"
                     onClick={() => {
                       setImageLoading(true);
                       setPreviewImage(`${IMAGE_HOST}${att.checkoutImage}`);
@@ -111,11 +125,11 @@ const AttendanceSection = () => {
                 href={`https://maps.google.com/?q=${att.checkinLocation.lat},${att.checkinLocation.lng}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block text-xs text-blue-600 underline mt-1"
+                className="mt-1 block text-xs text-blue-600 underline"
               >
                 View Map
               </a>
-              <div className="flex gap-1 mt-1">
+              <div className="mt-1 flex gap-1">
                 <Tooltip title="Sale Report">
                   <CheckCircleTwoTone twoToneColor={att.saleReport ? "#52c41a" : "#d9d9d9"} />
                 </Tooltip>
@@ -134,10 +148,9 @@ const AttendanceSection = () => {
             </div>
           ))}
         </div>
-      )
-    }
+      ),
+    },
   ];
-
 
   const handleDateChange = (date: Dayjs | null) => {
     if (date) {
@@ -145,7 +158,6 @@ const AttendanceSection = () => {
       setPage(1);
     }
   };
-
 
   const disableDate = (current: Dayjs) => {
     return current > dayjs();
@@ -162,7 +174,6 @@ const AttendanceSection = () => {
   const handleExportPDF = () => {
     console.log(outletType, selectedOutletId, selectedDate);
   };
-
 
   return (
     <section>
@@ -182,7 +193,7 @@ const AttendanceSection = () => {
               value: o.id,
             }))}
             filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
           />
           {/* Select Province */}
@@ -199,7 +210,7 @@ const AttendanceSection = () => {
               value: o.id,
             }))}
             filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
           />
 
@@ -217,7 +228,7 @@ const AttendanceSection = () => {
               value: o.id,
             }))}
             filterOption={(input, option) =>
-              (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+              (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
             }
           />
 
@@ -228,10 +239,21 @@ const AttendanceSection = () => {
             defaultValue={dayjs()}
           />
 
-          <Button type="default" variant="outlined" icon={<DownloadOutlined />} onClick={handleExportExcel} >
+          <Button
+            type="default"
+            variant="outlined"
+            icon={<DownloadOutlined />}
+            onClick={handleExportExcel}
+          >
             Export Excel
           </Button>
-          <Button type="default" danger variant="outlined" icon={<DownloadOutlined />} onClick={handleExportExcel} >
+          <Button
+            type="default"
+            danger
+            variant="outlined"
+            icon={<DownloadOutlined />}
+            onClick={handleExportExcel}
+          >
             Export PPT
           </Button>
         </div>
@@ -264,9 +286,9 @@ const AttendanceSection = () => {
         >
           <Spin spinning={imageLoading}>
             <img
-              src={previewImage || ''}
+              src={previewImage || ""}
               alt="Preview"
-              className="w-full h-auto object-contain"
+              className="h-auto w-full object-contain"
               onLoad={() => setImageLoading(false)}
             />
           </Spin>
