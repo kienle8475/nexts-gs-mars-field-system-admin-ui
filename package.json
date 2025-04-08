@@ -1,5 +1,5 @@
 {
-  "name": "nexts-gs-hunting-game-admin-ui",
+  "name": "nexts-gs-mars-field-system-admin-ui",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -34,7 +34,7 @@
     "moment-timezone": "^0.5.45",
     "next": "14.2.13",
     "nextjs-toploader": "^3.6.15",
-    "nexts-gs-hunting-game-admin-ui": "file:",
+    "nexts-gs-mars-field-system-admin-ui": "file:",
     "qr-code-styling": "^1.8.4",
     "react": "^18",
     "react-calendar": "^5.0.0",
@@ -50,7 +50,6 @@
     "sockjs-client": "^1.6.1",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
-    "tiger-hunting-game-admin": "file:",
     "uuid": "^10.0.0",
     "viewerjs": "^1.11.7",
     "zod": "^3.23.8",

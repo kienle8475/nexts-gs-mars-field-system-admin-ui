@@ -729,7 +729,7 @@
 
 "@stomp/stompjs@^7.1.1":
   version "7.1.1"
-  resolved "https://registry.yarnpkg.com/@stomp/stompjs/-/stompjs-7.1.1.tgz#9a836da33bed5b76c72a8f17f0594de98120f6d6"
+  resolved "https://registry.npmjs.org/@stomp/stompjs/-/stompjs-7.1.1.tgz"
   integrity sha512-chcDs6YkAnKp1FqzwhGvh3i7v0+/ytzqWdKYw6XzINEKAzke/iD00dNgFPWSZEqktHOK+C1gSzXhLkLbARIaZw==
 
 "@swc/counter@^0.1.3":
@@ -806,7 +806,7 @@
 
 "@types/sockjs-client@^1.5.4":
   version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@types/sockjs-client/-/sockjs-client-1.5.4.tgz#2c0b6aadf0cfeb49cd210e4c59995a6608fbd8ea"
+  resolved "https://registry.npmjs.org/@types/sockjs-client/-/sockjs-client-1.5.4.tgz"
   integrity sha512-zk+uFZeWyvJ5ZFkLIwoGA/DfJ+pYzcZ8eH4H/EILCm2OBZyHH6Hkdna1/UWL/CFruh5wj6ES7g75SvUB0VsH5w==
 
 "@types/use-sync-external-store@^0.0.6":
@@ -2110,7 +2110,7 @@ eventemitter3@^5.0.1:
 
 eventsource@^2.0.2:
   version "2.0.2"
-  resolved "https://registry.yarnpkg.com/eventsource/-/eventsource-2.0.2.tgz#76dfcc02930fb2ff339520b6d290da573a9e8508"
+  resolved "https://registry.npmjs.org/eventsource/-/eventsource-2.0.2.tgz"
   integrity sha512-IzUmBGPR3+oUG9dUeXynyNmf91/3zUSJg1lCktzKw47OXuhco54U3r9B7O4XX+Rb1Itm9OZ2b0RkTs10bICOxA==
 
 exceljs@^4.4.0:
@@ -2171,7 +2171,7 @@ fastq@^1.6.0:
 
 faye-websocket@^0.11.4:
   version "0.11.4"
-  resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.11.4.tgz#7f0d9275cfdd86a1c963dc8b65fcc451edcbb1da"
+  resolved "https://registry.npmjs.org/faye-websocket/-/faye-websocket-0.11.4.tgz"
   integrity sha512-CzbClwlXAuiRQAlUyfqPgvPoNKTckTPGfwZV4ZdAhVcP2lh9KUxJg2b5GkE7XbjKQ3YJnQ9z6D9ntLAlB+tP8g==
   dependencies:
     websocket-driver ">=0.5.1"
@@ -2475,7 +2475,7 @@ hoist-non-react-statics@^3.3.1:
 
 http-parser-js@>=0.5.1:
   version "0.5.9"
-  resolved "https://registry.yarnpkg.com/http-parser-js/-/http-parser-js-0.5.9.tgz#b817b3ca0edea6236225000d795378707c169cec"
+  resolved "https://registry.npmjs.org/http-parser-js/-/http-parser-js-0.5.9.tgz"
   integrity sha512-n1XsPy3rXVxlqxVioEWdC+0+M+SQw0DpJynwtOPo1X+ZlvdzTLtDBIJJlDQTnwZIFJrZSzSGmIOUdP8tu+SgLw==
 
 ieee754@^1.1.13:
@@ -3206,56 +3206,6 @@ nextjs-toploader@^3.6.15:
     nprogress "^0.2.0"
     prop-types "^15.8.1"
 
-"nexts-gs-hunting-game-admin-ui@file:.":
-  version "0.1.0"
-  dependencies:
-    "@emotion/react" "^11.13.3"
-    "@emotion/styled" "^11.13.0"
-    "@floating-ui/react" "^0.26.24"
-    "@hello-pangea/dnd" "^17.0.0"
-    "@hookform/error-message" "^2.0.1"
-    "@hookform/resolvers" "^3.9.0"
-    "@stomp/stompjs" "^7.1.1"
-    "@types/lodash" "^4.17.13"
-    antd "^5.21.2"
-    antd-img-crop "^4.24.0"
-    axios "^1.7.7"
-    axios-retry "^4.5.0"
-    clsx "^2.1.1"
-    colord "^2.9.3"
-    date-fns "^4.1.0"
-    eventemitter3 "^5.0.1"
-    exceljs "^4.4.0"
-    framer-motion "^11.9.0"
-    jwt-decode "^4.0.0"
-    leaflet "^1.9.4"
-    lodash "^4.17.21"
-    moment "^2.30.1"
-    moment-timezone "^0.5.45"
-    next "14.2.13"
-    nextjs-toploader "^3.6.15"
-    nexts-gs-hunting-game-admin-ui "file:../../../AppData/Local/Yarn/Cache/v6/npm-nexts-gs-hunting-game-admin-ui-0.1.0-40f7a7c3-3e2a-4182-8c79-4c639af35276-1744020251258/node_modules/nexts-gs-hunting-game-admin-ui"
-    qr-code-styling "^1.8.4"
-    react "^18"
-    react-calendar "^5.0.0"
-    react-dom "^18"
-    react-dropzone "^14.2.3"
-    react-error-boundary "^4.0.13"
-    react-hook-form "^7.53.0"
-    react-hot-toast "^2.4.1"
-    react-icons "^5.3.0"
-    react-leaflet "^4.2.1"
-    react-query "^3.39.3"
-    sass "^1.79.4"
-    sockjs-client "^1.6.1"
-    sonner "^1.5.0"
-    tailwind-merge "^2.5.2"
-    tiger-hunting-game-admin "file:../../../AppData/Local/Yarn/Cache/v6/npm-nexts-gs-hunting-game-admin-ui-0.1.0-40f7a7c3-3e2a-4182-8c79-4c639af35276-1744020251258/node_modules/nexts-gs-hunting-game-admin-ui"
-    uuid "^10.0.0"
-    viewerjs "^1.11.7"
-    zod "^3.23.8"
-    zustand "^5.0.0-rc.2"
-
 node-addon-api@^7.0.0:
   version "7.1.1"
   resolved "https://registry.npmjs.org/node-addon-api/-/node-addon-api-7.1.1.tgz"
@@ -3599,7 +3549,7 @@ qrcode-generator@^1.4.4:
 
 querystringify@^2.1.1:
   version "2.2.0"
-  resolved "https://registry.yarnpkg.com/querystringify/-/querystringify-2.2.0.tgz#3345941b4153cb9d082d8eee4cda2016a9aef7f6"
+  resolved "https://registry.npmjs.org/querystringify/-/querystringify-2.2.0.tgz"
   integrity sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==
 
 queue-microtask@^1.2.2:
@@ -4150,7 +4100,7 @@ remove-accents@0.5.0:
 
 requires-port@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+  resolved "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz"
   integrity sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==
 
 resize-observer-polyfill@^1.5.1:
@@ -4339,7 +4289,7 @@ signal-exit@^4.0.1:
 
 sockjs-client@^1.6.1:
   version "1.6.1"
-  resolved "https://registry.yarnpkg.com/sockjs-client/-/sockjs-client-1.6.1.tgz#350b8eda42d6d52ddc030c39943364c11dcad806"
+  resolved "https://registry.npmjs.org/sockjs-client/-/sockjs-client-1.6.1.tgz"
   integrity sha512-2g0tjOR+fRs0amxENLi/q5TiJTqY+WXFOzb5UwXndlK6TO3U/mirZznpx6w34HVMoc3g7cY24yC/ZMIYnDlfkw==
   dependencies:
     debug "^3.2.7"
@@ -4634,56 +4584,6 @@ throttle-debounce@^5.0.0, throttle-debounce@^5.0.2:
   resolved "https://registry.npmjs.org/throttle-debounce/-/throttle-debounce-5.0.2.tgz"
   integrity sha512-B71/4oyj61iNH0KeCamLuE2rmKuTO5byTOSVwECM5FA7TiAiAW+UqTKZ9ERueC4qvgSttUhdmq1mXC3kJqGX7A==
 
-"tiger-hunting-game-admin@file:.":
-  version "0.1.0"
-  dependencies:
-    "@emotion/react" "^11.13.3"
-    "@emotion/styled" "^11.13.0"
-    "@floating-ui/react" "^0.26.24"
-    "@hello-pangea/dnd" "^17.0.0"
-    "@hookform/error-message" "^2.0.1"
-    "@hookform/resolvers" "^3.9.0"
-    "@stomp/stompjs" "^7.1.1"
-    "@types/lodash" "^4.17.13"
-    antd "^5.21.2"
-    antd-img-crop "^4.24.0"
-    axios "^1.7.7"
-    axios-retry "^4.5.0"
-    clsx "^2.1.1"
-    colord "^2.9.3"
-    date-fns "^4.1.0"
-    eventemitter3 "^5.0.1"
-    exceljs "^4.4.0"
-    framer-motion "^11.9.0"
-    jwt-decode "^4.0.0"
-    leaflet "^1.9.4"
-    lodash "^4.17.21"
-    moment "^2.30.1"
-    moment-timezone "^0.5.45"
-    next "14.2.13"
-    nextjs-toploader "^3.6.15"
-    nexts-gs-hunting-game-admin-ui "file:../../../AppData/Local/Yarn/Cache/v6/npm-tiger-hunting-game-admin-0.1.0-6b33503a-7330-4dc7-a5b2-65aafd652a59-1744020251281/node_modules/tiger-hunting-game-admin"
-    qr-code-styling "^1.8.4"
-    react "^18"
-    react-calendar "^5.0.0"
-    react-dom "^18"
-    react-dropzone "^14.2.3"
-    react-error-boundary "^4.0.13"
-    react-hook-form "^7.53.0"
-    react-hot-toast "^2.4.1"
-    react-icons "^5.3.0"
-    react-leaflet "^4.2.1"
-    react-query "^3.39.3"
-    sass "^1.79.4"
-    sockjs-client "^1.6.1"
-    sonner "^1.5.0"
-    tailwind-merge "^2.5.2"
-    tiger-hunting-game-admin "file:../../../AppData/Local/Yarn/Cache/v6/npm-tiger-hunting-game-admin-0.1.0-6b33503a-7330-4dc7-a5b2-65aafd652a59-1744020251281/node_modules/tiger-hunting-game-admin"
-    uuid "^10.0.0"
-    viewerjs "^1.11.7"
-    zod "^3.23.8"
-    zustand "^5.0.0-rc.2"
-
 tiny-invariant@^1.0.6:
   version "1.3.3"
   resolved "https://registry.npmjs.org/tiny-invariant/-/tiny-invariant-1.3.3.tgz"
@@ -4853,7 +4753,7 @@ uri-js@^4.2.2:
 
 url-parse@^1.5.10:
   version "1.5.10"
-  resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.5.10.tgz#9d3c2f736c1d75dd3bd2be507dcc111f1e2ea9c1"
+  resolved "https://registry.npmjs.org/url-parse/-/url-parse-1.5.10.tgz"
   integrity sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==
   dependencies:
     querystringify "^2.1.1"
@@ -4898,7 +4798,7 @@ warning@^4.0.0:
 
 websocket-driver@>=0.5.1:
   version "0.7.4"
-  resolved "https://registry.yarnpkg.com/websocket-driver/-/websocket-driver-0.7.4.tgz#89ad5295bbf64b480abcba31e4953aca706f5760"
+  resolved "https://registry.npmjs.org/websocket-driver/-/websocket-driver-0.7.4.tgz"
   integrity sha512-b17KeDIQVjvb0ssuSDF2cYXSg2iztliJ4B9WdsuB6J952qCPKmnVq4DyW5motImXHDC1cBT/1UezrJVsKw5zjg==
   dependencies:
     http-parser-js ">=0.5.1"
@@ -4907,7 +4807,7 @@ websocket-driver@>=0.5.1:
 
 websocket-extensions@>=0.1.1:
   version "0.1.4"
-  resolved "https://registry.yarnpkg.com/websocket-extensions/-/websocket-extensions-0.1.4.tgz#7f8473bc839dfd87608adb95d7eb075211578a42"
+  resolved "https://registry.npmjs.org/websocket-extensions/-/websocket-extensions-0.1.4.tgz"
   integrity sha512-OqedPIGOfsDlo31UNwYbCFMSaO9m9G/0faIHj5/dZFDMFqPTcx6UwqyOy3COEaEOg/9VsGIpdqn62W5KhoKSpg==
 
 which-boxed-primitive@^1.0.2:
