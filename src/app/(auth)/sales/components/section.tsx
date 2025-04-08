@@ -75,14 +75,14 @@ const SalesSection = () => {
     },
 
     {
-      title: "Shift",
+      title: "Ca",
       fixed: "left",
       dataIndex: "shiftName",
       width: 100,
       align: "center"
     },
     {
-      title: "Staff",
+      title: "Nhân viên",
       fixed: "left",
       width: 200,
       render: (_: any, record: any) => {

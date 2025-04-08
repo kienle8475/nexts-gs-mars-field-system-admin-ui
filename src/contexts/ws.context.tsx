@@ -33,7 +33,7 @@ export const WSProvider = (props: WSProviderProps) => {
     const stompClient = new Client({
       webSocketFactory: () => socket,
       debug: (str: string) => {
-        console.log("STOMP: " + str);
+        // console.log("STOMP: " + str);
       },
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,

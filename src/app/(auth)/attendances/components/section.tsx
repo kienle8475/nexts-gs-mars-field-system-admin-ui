@@ -9,6 +9,7 @@ import { useAttendanceReport } from "@/services/attendance/list";
 import { ProvinceOption, useAllProvincesOptions } from "@/services/province/list-option";
 import { useAutoPingPong } from "@/hooks/use-auto-ping-pong";
 import { exportAttendanceExcel } from "@/services/export/attendance.export";
+import { generatePptxExport, watchExportJob } from "@/services/export/pptx.export";
 const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST;
 
 const AttendanceSection = () => {
@@ -23,6 +24,9 @@ const AttendanceSection = () => {
   const [imageLoading, setImageLoading] = useState<boolean>(false);
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
+  const [jobId, setJobId] = useState<number | null>(null);
+  const [status, setStatus] = useState<'IDLE' | 'PROCESSING' | 'DONE' | 'FAILED'>('IDLE');
+  const [showPopup, setShowPopup] = useState(false);
 
   // === Gọi API outlet dựa vào selectedProvince ===
   const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(
@@ -63,6 +67,40 @@ const AttendanceSection = () => {
       console.error('Export failed', error);
       console.log(error);
       alert('Export failed');
+    }
+  };
+
+  const handleExportPPTX = async () => {
+    try {
+      setStatus('PROCESSING');
+      setShowPopup(true);
+      const id = await generatePptxExport({
+        staffId: Number(selectedStaffId),
+        outletId: Number(selectedOutletId),
+        provinceId: Number(selectedProvinceId),
+        date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      });
+
+      setJobId(id);
+
+      const stopWatch = watchExportJob(
+        id,
+        () => {
+          setStatus('DONE');
+          setShowPopup(false);
+        },
+        () => {
+          setStatus('FAILED');
+          setShowPopup(false);
+          alert('Xuất file thất bại.');
+        }
+      );
+
+      return () => stopWatch();
+    } catch (err) {
+      console.error('Lỗi khi gửi yêu cầu xuất PowerPoint:', err);
+      setStatus('FAILED');
+      setShowPopup(false);
     }
   };
 
@@ -117,8 +155,8 @@ const AttendanceSection = () => {
             <div key={att.id} className="rounded-md border bg-gray-50 p-2 shadow-sm">
               <div className="text-sm font-semibold">{att.staff?.fullName}</div>
               <div className="text-xs text-gray-500">
-                🕘 {dayjs(att.checkinTime).format("HH:mm DD/MM")} →{" "}
-                {dayjs(att.checkoutTime).format("HH:mm DD/MM")}
+                🕘 {att.checkinTime ? dayjs(att.checkinTime).format("HH:mm DD/MM") : ""} →{" "}
+                {att.checkoutTime ? dayjs(att.checkoutTime).format("HH:mm DD/MM") : " - "}
               </div>
               <div className="mt-1 flex gap-2">
                 {att.checkinImage && (
@@ -252,10 +290,11 @@ const AttendanceSection = () => {
             type="default"
             danger
             variant="outlined"
+            disabled={status === 'PROCESSING'}
             icon={<DownloadOutlined />}
-            onClick={handleExportExcel}
+            onClick={handleExportPPTX}
           >
-            Export PPT
+            {status === 'PROCESSING' ? 'Đang xử lý...' : 'Export PowerPoint'}
           </Button>
         </div>
         <div className="p-6">
@@ -294,6 +333,34 @@ const AttendanceSection = () => {
             />
           </Spin>
         </Modal>
+        {showPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
+              <div className="flex justify-center mb-4">
+                <svg className="animate-spin h-6 w-6 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                  ></path>
+                </svg>
+              </div>
+              <p className="text-lg font-medium mb-2">Đang tạo file PowerPoint...</p>
+              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div className="h-full bg-orange-600 animate-pulse w-1/2"></div>
+              </div>
+              <p className="text-sm text-gray-500 mt-2">Vui lòng đợi trong giây lát.</p>
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

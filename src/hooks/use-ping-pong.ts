@@ -6,19 +6,19 @@ export const usePingPong = () => {
   const { subscribe, send, connected } = useWebSocket();
 
   const handlePing = useCallback((message: any) => {
-    notification.info({
-      message: "Server Ping",
-      description: message.message,
-      placement: "topRight",
-    });
+    // notification.info({
+    //   message: "Server Ping",
+    //   description: message.message,
+    //   placement: "topRight",
+    // });
   }, []);
 
   const handlePong = useCallback((message: any) => {
-    notification.success({
-      message: "Server Pong",
-      description: message.message,
-      placement: "topRight",
-    });
+    // notification.success({
+    //   message: "Server Pong",
+    //   description: message.message,
+    //   placement: "topRight",
+    // });
   }, []);
 
   useEffect(() => {
