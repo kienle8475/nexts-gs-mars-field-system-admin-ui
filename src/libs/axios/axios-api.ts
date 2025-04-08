@@ -35,5 +35,4 @@ const createAxiosInstance = (baseURL: string) => {
 };
 
 
-export const primaryAxios = createAxiosInstance(`${process.env.NEXT_PUBLIC_API_URL}/api`);
-export const secondAxios = createAxiosInstance(`${process.env.NEXT_PUBLIC_SPRING_API_URL}/api`);
+export const primaryAxios = createAxiosInstance(`${process.env.NEXT_PUBLIC_API_URL}/v1`);

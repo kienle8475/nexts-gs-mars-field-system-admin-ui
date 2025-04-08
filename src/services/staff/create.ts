@@ -1,4 +1,4 @@
-import { axiosApi, axiosSecondApi } from "@/libs/axios";
+import { axiosApi } from "@/libs/axios";
 
 export interface RegisterStaffPayload {
   username: string;

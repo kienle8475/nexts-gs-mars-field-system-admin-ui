@@ -10,6 +10,7 @@ import { useAttendanceReport } from "@/services/attendance/list";
 import { ProvinceOption, useAllProvincesOptions } from "@/services/province/list-option";
 import { useReportItems } from "@/services/report-item/list";
 import { ColumnType } from "antd/es/table";
+import { exportSaleExcel } from "@/services/export/sale.export";
 
 
 const SalesSection = () => {
@@ -24,6 +25,21 @@ const SalesSection = () => {
     if (date) {
       setSelectedDate(date.startOf("day"));
       setPage(1);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      await exportSaleExcel({
+        staffId: Number(selectedStaffId),
+        outletId: Number(selectedOutletId),
+        provinceId: Number(selectedProvinceId),
+        date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      });
+    } catch (error) {
+      console.error('Export failed', error);
+      console.log(error);
+      alert('Export failed');
     }
   };
 
@@ -168,7 +184,7 @@ const SalesSection = () => {
           defaultValue={dayjs()}
         />
 
-        <Button icon={<DownloadOutlined />} type="primary">
+        <Button icon={<DownloadOutlined />} type="primary" onClick={handleExportExcel}>
           Export Excel
         </Button>
       </div>

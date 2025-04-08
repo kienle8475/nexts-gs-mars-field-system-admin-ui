@@ -1,4 +1,4 @@
-import { axiosApi, axiosSecondApi } from "@/libs/axios";
+import { axiosApi } from "@/libs/axios";
 import { ExtractFnReturnType, QueryConfig } from "@/libs/react-query";
 import { ProvinceDetails } from "@/types/extend";
 import { useQuery } from "react-query";

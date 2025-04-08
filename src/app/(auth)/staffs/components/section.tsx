@@ -57,7 +57,7 @@ const staffSection = () => {
       dataIndex: "profileImage",
       render: (url: string) => (
         <div className="flex items-center gap-2">
-          <img src={`${url}`} alt="Ảnh profile" className="w-10 h-10 rounded-full cursor-pointer" onClick={() => {
+          <img src={`${IMAGE_HOST}${url}`} alt="Ảnh profile" className="w-10 h-10 rounded-full cursor-pointer" onClick={() => {
             setPreviewImage(`${IMAGE_HOST}${url}`);
             setImageLoading(true);
           }} />

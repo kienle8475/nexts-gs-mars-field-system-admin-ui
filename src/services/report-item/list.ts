@@ -1,4 +1,4 @@
-import { axiosApi, axiosSecondApi } from "@/libs/axios";
+import { axiosApi } from "@/libs/axios";
 import { useQuery } from "react-query";
 
 export interface ReportItem {

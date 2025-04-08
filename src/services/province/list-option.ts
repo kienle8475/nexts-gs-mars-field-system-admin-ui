@@ -1,4 +1,4 @@
-import { axiosApi, axiosSecondApi } from "@/libs/axios";
+import { axiosApi } from "@/libs/axios";
 import { ExtractFnReturnType, QueryConfig } from "@/libs/react-query";
 import { BaseResponse, IOutlet } from "@/types/model";
 import axios from "axios";

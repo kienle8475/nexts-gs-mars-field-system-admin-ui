@@ -8,6 +8,7 @@ import { ProfileOption, useStaffProfileOptions } from "@/services/profile/list-s
 import { useAttendanceReport } from "@/services/attendance/list";
 import { ProvinceOption, useAllProvincesOptions } from "@/services/province/list-option";
 import { useAutoPingPong } from "@/hooks/use-auto-ping-pong";
+import { exportAttendanceExcel } from "@/services/export/attendance.export";
 const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST;
 
 const AttendanceSection = () => {
@@ -42,6 +43,28 @@ const AttendanceSection = () => {
   }, [selectedProvinceId, selectedOutletId, selectedStaffId, selectedDate, page, pageSize]);
 
   const { data, isFetching } = useAttendanceReport(queryParams);
+
+  const handleDateChange = (date: Dayjs | null) => {
+    if (date) {
+      setSelectedDate(date.startOf("day"));
+      setPage(1);
+    }
+  };
+
+  const handleExportExcel = async () => {
+    try {
+      await exportAttendanceExcel({
+        staffId: Number(selectedStaffId),
+        outletId: Number(selectedOutletId),
+        provinceId: Number(selectedProvinceId),
+        date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      });
+    } catch (error) {
+      console.error('Export failed', error);
+      console.log(error);
+      alert('Export failed');
+    }
+  };
 
   const columns = [
     {
@@ -152,28 +175,6 @@ const AttendanceSection = () => {
     },
   ];
 
-  const handleDateChange = (date: Dayjs | null) => {
-    if (date) {
-      setSelectedDate(date.startOf("day"));
-      setPage(1);
-    }
-  };
-
-  const disableDate = (current: Dayjs) => {
-    return current > dayjs();
-  };
-
-  const handleApplyFilters = () => {
-    console.log(outletType, selectedOutletId, selectedDate);
-  };
-
-  const handleExportExcel = () => {
-    console.log(outletType, selectedOutletId, selectedDate);
-  };
-
-  const handleExportPDF = () => {
-    console.log(outletType, selectedOutletId, selectedDate);
-  };
 
   return (
     <section>
