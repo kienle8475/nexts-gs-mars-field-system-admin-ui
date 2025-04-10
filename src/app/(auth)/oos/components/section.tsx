@@ -8,7 +8,7 @@ import { OutletOption, useOutletsByProvince } from "@/services/outlet/list-optio
 import { ProfileOption, useStaffProfileOptions } from "@/services/profile/list-staff-option";
 import { useAttendanceReport } from "@/services/attendance/list";
 import { ProvinceOption, useAllProvincesOptions } from "@/services/province/list-option";
-import { useReportItems } from "@/services/report-item/list";
+import { useReportItems } from "@/services/report-item/list-by-type";
 import { ColumnType } from "antd/es/table";
 import { exportOosExcel } from "@/services/export/oos.export";
 

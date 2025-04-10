@@ -19,16 +19,14 @@ export interface GetReportItemsResponse {
 }
 
 
-export const getReportItemsByType = async (type: string): Promise<GetReportItemsResponse> => {
-  const response = await axiosApi.get(`/report-items/by-report-type`, {
-    params: { type },
-  });
+export const getReportItems = async (): Promise<ReportItem[]> => {
+  const response = await axiosApi.get(`/report-items`);
   return response.data.data;
 };
 
-export const useReportItems = (type: string) =>
-  useQuery<GetReportItemsResponse>({
-    queryKey: ["reportItems", type],
-    queryFn: () => getReportItemsByType(type),
+export const useReportItems = () =>
+  useQuery<ReportItem[]>({
+    queryKey: ["reportItems"],
+    queryFn: () => getReportItems(),
     staleTime: 1 * 60 * 1000,
   });

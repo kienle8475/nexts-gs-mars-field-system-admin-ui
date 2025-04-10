@@ -100,9 +100,6 @@ const staffSection = () => {
         <Button icon={<UserAddOutlined />} type="default" onClick={() => handleOpenModal()}>
           Tạo tài khoản
         </Button>
-        <Button icon={<DownloadOutlined />} type="primary">
-          Export Excel
-        </Button>
       </div>
       <div className="p-6">
         <Spin spinning={isLoading}>
