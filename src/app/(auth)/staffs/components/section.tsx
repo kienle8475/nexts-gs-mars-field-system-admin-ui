@@ -57,10 +57,19 @@ const staffSection = () => {
       dataIndex: "profileImage",
       render: (url: string) => (
         <div className="flex items-center gap-2">
-          <img src={`${IMAGE_HOST}${url}`} alt="Ảnh profile" className="w-10 h-10 rounded-full cursor-pointer" onClick={() => {
-            setPreviewImage(`${IMAGE_HOST}${url}`);
-            setImageLoading(true);
-          }} />
+          <img
+            src={`${IMAGE_HOST}${url}`}
+            alt="Ảnh profile"
+            className="w-10 h-10 rounded-full cursor-pointer bg-white"
+            onClick={() => {
+              setPreviewImage(`${IMAGE_HOST}${url}`);
+              setImageLoading(true);
+            }}
+            onError={(e) => {
+              e.currentTarget.src = "/images/default-avatar.png";
+              e.currentTarget.style.backgroundColor = "white";
+            }}
+          />
         </div>
       ),
     },

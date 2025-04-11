@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { IconBaseProps } from "react-icons/lib";
-import { MdLocationOn, MdAccountCircle, MdOutlineCalendarToday, MdShoppingCart, MdInventory, MdOutlineInventory2, MdOutlineShoppingCart, MdOutlineLocationOff, MdOutlineAccountCircle, MdOutlineStore, MdOutlineReport, MdOutlineAir } from "react-icons/md";
+import { MdLocationOn, MdAccountCircle, MdOutlineCalendarToday, MdShoppingCart, MdInventory, MdOutlineInventory2, MdOutlineShoppingCart, MdOutlineLocationOff, MdOutlineAccountCircle, MdOutlineStore, MdOutlineReport, MdOutlineAir, MdContentPaste } from "react-icons/md";
 import { useControllableState } from "@/hooks/use-controllable-state";
 import { motion, AnimatePresence } from "framer-motion";
 import { css } from "@emotion/react";
@@ -86,9 +86,16 @@ export const Navbar = () => {
           },
           {
             id: nanoid(),
+            name: "Ca làm việc",
+            slug: "/working-shift",
+            icon: MdOutlineCalendarToday,
+            subitems: [],
+          },
+          {
+            id: nanoid(),
             name: "Danh mục báo cáo",
             slug: "/report-item",
-            icon: MdOutlineAir,
+            icon: MdContentPaste,
             subitems: [],
           },
         ],
