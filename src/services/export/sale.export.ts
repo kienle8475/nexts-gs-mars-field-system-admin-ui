@@ -8,12 +8,16 @@ export const exportSaleExcel = async (params: {
   provinceId?: number;
   hasReport?: boolean;
   date?: string;
+  startDate?: string;
+  endDate?: string;
 }) => {
   const query = new URLSearchParams();
   if (params.staffId) query.append('staffId', String(params.staffId));
   if (params.outletId) query.append('outletId', String(params.outletId));
   if (params.provinceId) query.append('provinceId', String(params.provinceId));
   if (params.date) query.append('date', params.date);
+  if (params.startDate) query.append('startDate', params.startDate);
+  if (params.endDate) query.append('endDate', params.endDate);
 
   const response = await axiosApi.get(`/exports/sales?${query.toString()}`, {
     responseType: 'blob',

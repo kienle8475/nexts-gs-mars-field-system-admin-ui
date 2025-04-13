@@ -4,7 +4,9 @@ import { useQuery } from "react-query";
 // ==== TYPES ====
 
 export interface AttendanceFilterParams {
-  date: string;
+  date?: string;
+  startDate?: string;
+  endDate?: string;
   outletId?: string;
   staffId?: string;
   provinceId?: string;

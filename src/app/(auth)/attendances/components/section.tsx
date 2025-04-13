@@ -11,6 +11,7 @@ import { useAutoPingPong } from "@/hooks/use-auto-ping-pong";
 import { exportAttendanceExcel } from "@/services/export/attendance.export";
 import { generatePptxExport, watchExportJob } from "@/services/export/pptx.export";
 const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST;
+const { RangePicker } = DatePicker;
 
 const AttendanceSection = () => {
   useAutoPingPong(5000); // auto ping pong every 5 seconds
@@ -27,7 +28,10 @@ const AttendanceSection = () => {
   const [jobId, setJobId] = useState<number | null>(null);
   const [status, setStatus] = useState<'IDLE' | 'PROCESSING' | 'DONE' | 'FAILED'>('IDLE');
   const [showPopup, setShowPopup] = useState(false);
-
+  const [pptxDateModalVisible, setPptxDateModalVisible] = useState(false);
+  const [pptxSelectedDate, setPptxSelectedDate] = useState<Dayjs | null>(null);
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([dayjs(), dayjs()]);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
   // === Gọi API outlet dựa vào selectedProvince ===
   const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(
     Number(selectedProvinceId),
@@ -37,14 +41,16 @@ const AttendanceSection = () => {
     useStaffProfileOptions();
   const queryParams = useMemo(() => {
     return {
-      ...(selectedProvinceId !== undefined && { provinceId: selectedProvinceId }),
-      ...(selectedOutletId !== undefined && { outletId: selectedOutletId }),
-      ...(selectedStaffId !== undefined && { staffId: selectedStaffId }),
-      date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      ...(selectedProvinceId && { provinceId: selectedProvinceId }),
+      ...(selectedOutletId && { outletId: selectedOutletId }),
+      ...(selectedStaffId && { staffId: selectedStaffId }),
+      startDate: dateRange[0]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      endDate: dateRange[1]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
       page: page - 1,
       size: pageSize,
+      refreshKey, // ép hook refetch
     };
-  }, [selectedProvinceId, selectedOutletId, selectedStaffId, selectedDate, page, pageSize]);
+  }, [selectedProvinceId, selectedOutletId, selectedStaffId, dateRange, page, pageSize, refreshKey]);
 
   const { data, isFetching } = useAttendanceReport(queryParams);
 
@@ -55,30 +61,51 @@ const AttendanceSection = () => {
     }
   };
 
-  const handleExportExcel = async () => {
-    try {
-      await exportAttendanceExcel({
-        staffId: Number(selectedStaffId),
-        outletId: Number(selectedOutletId),
-        provinceId: Number(selectedProvinceId),
-        date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
-      });
-    } catch (error) {
-      console.error('Export failed', error);
-      console.log(error);
-      alert('Export failed');
+  // Handler for when the date range changes
+  const handleDateRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    if (dates && dates[0] && dates[1]) {
+      const newRange: [Dayjs, Dayjs] = [dates[0].startOf('day'), dates[1].endOf('day')];
+      setDateRange(newRange);
+      setPage(1);
+    } else {
+      const today = dayjs();
+      const resetRange: [Dayjs, Dayjs] = [today.startOf('day'), today.endOf('day')];
+      setDateRange(resetRange);
+      setPage(1);
+      setRefreshKey((prev) => prev + 1)
     }
   };
 
-  const handleExportPPTX = async () => {
+  const handleExportPPTX = () => {
+    const [start, end] = dateRange;
+
+    if (!start || !end) return;
+
+    if (!start.isSame(end, 'day')) {
+      Modal.warning({
+        title: 'Chỉ hỗ trợ xuất PowerPoint cho 1 ngày',
+        content: 'Vui lòng chọn một ngày cụ thể để tiếp tục.',
+        onOk: () => {
+          setPptxSelectedDate(start); // gợi ý luôn ngày đầu tiên
+          setPptxDateModalVisible(true); // mở modal chọn ngày
+        },
+      });
+      return;
+    }
+
+    proceedExportPPTX(start); // nếu cùng 1 ngày thì gọi export ngay
+  };
+
+  const proceedExportPPTX = async (date: Dayjs) => {
     try {
       setStatus('PROCESSING');
       setShowPopup(true);
+
       const id = await generatePptxExport({
         staffId: Number(selectedStaffId),
         outletId: Number(selectedOutletId),
         provinceId: Number(selectedProvinceId),
-        date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+        date: date.format("YYYY-MM-DD"),
       });
 
       setJobId(id);
@@ -98,9 +125,26 @@ const AttendanceSection = () => {
 
       return () => stopWatch();
     } catch (err) {
-      console.error('Lỗi khi gửi yêu cầu xuất PowerPoint:', err);
+      console.error('Lỗi xuất PowerPoint:', err);
       setStatus('FAILED');
       setShowPopup(false);
+    }
+  };
+
+
+  const handleExportExcel = async () => {
+    try {
+      await exportAttendanceExcel({
+        staffId: Number(selectedStaffId),
+        outletId: Number(selectedOutletId),
+        provinceId: Number(selectedProvinceId),
+        startDate: dateRange[0]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+        endDate: dateRange[1]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      });
+    } catch (error) {
+      console.error('Export failed', error);
+      console.log(error);
+      alert('Export failed');
     }
   };
 
@@ -271,11 +315,12 @@ const AttendanceSection = () => {
             }
           />
 
-          <DatePicker
-            className="w-full md:w-1/4"
-            value={selectedDate}
-            onChange={handleDateChange}
-            defaultValue={dayjs()}
+          <RangePicker
+            className="w-full md:w-2/5" // Adjust width as per your design
+            onChange={handleDateRangeChange} // Update the state on change
+            defaultValue={[dayjs(), dayjs()]} // Default date range is today
+            showTime={false} // Hide time selection
+            value={dateRange} // Controlled input using state
           />
 
           <Button
@@ -332,6 +377,25 @@ const AttendanceSection = () => {
               onLoad={() => setImageLoading(false)}
             />
           </Spin>
+        </Modal>
+        <Modal
+          title="Chọn ngày để xuất PowerPoint"
+          open={pptxDateModalVisible}
+          onCancel={() => setPptxDateModalVisible(false)}
+          onOk={() => {
+            if (pptxSelectedDate) {
+              proceedExportPPTX(pptxSelectedDate);
+              setPptxDateModalVisible(false);
+            } else {
+              Modal.warning({ content: "Vui lòng chọn ngày!" });
+            }
+          }}
+        >
+          <DatePicker
+            value={pptxSelectedDate}
+            onChange={(date) => setPptxSelectedDate(date)}
+            className="w-full"
+          />
         </Modal>
         {showPopup && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

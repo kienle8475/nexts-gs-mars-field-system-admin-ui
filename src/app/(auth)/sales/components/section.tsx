@@ -12,6 +12,7 @@ import { useReportItems } from "@/services/report-item/list-by-type";
 import { ColumnType } from "antd/es/table";
 import { exportSaleExcel } from "@/services/export/sale.export";
 
+const { RangePicker } = DatePicker;
 
 const SalesSection = () => {
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>();
@@ -20,11 +21,21 @@ const SalesSection = () => {
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [dateRange, setDateRange] = useState<[Dayjs | null, Dayjs | null]>([dayjs(), dayjs()]);
+  const [refreshKey, setRefreshKey] = useState<number>(0);
 
-  const handleDateChange = (date: Dayjs | null) => {
-    if (date) {
-      setSelectedDate(date.startOf("day"));
+  // Handler for when the date range changes
+  const handleDateRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
+    if (dates && dates[0] && dates[1]) {
+      const newRange: [Dayjs, Dayjs] = [dates[0].startOf('day'), dates[1].endOf('day')];
+      setDateRange(newRange);
       setPage(1);
+    } else {
+      const today = dayjs();
+      const resetRange: [Dayjs, Dayjs] = [today.startOf('day'), today.endOf('day')];
+      setDateRange(resetRange);
+      setPage(1);
+      setRefreshKey((prev) => prev + 1)
     }
   };
 
@@ -34,7 +45,8 @@ const SalesSection = () => {
         staffId: Number(selectedStaffId),
         outletId: Number(selectedOutletId),
         provinceId: Number(selectedProvinceId),
-        date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+        startDate: dateRange[0]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+        endDate: dateRange[1]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
       });
     } catch (error) {
       console.error('Export failed', error);
@@ -43,6 +55,7 @@ const SalesSection = () => {
     }
   };
 
+
   // === Gọi API outlet dựa vào selectedProvince ===
   const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(Number(selectedProvinceId));
   const { data: provinceOptions = [], isLoading: provinceLoading } = useAllProvincesOptions();
@@ -50,14 +63,16 @@ const SalesSection = () => {
   const { data: reportItems = [], isLoading: reportItemsLoading } = useReportItems("SALES");
   const queryParams = useMemo(() => {
     return {
-      ...(selectedProvinceId !== undefined && { provinceId: selectedProvinceId }),
-      ...(selectedOutletId !== undefined && { outletId: selectedOutletId }),
-      ...(selectedStaffId !== undefined && { staffId: selectedStaffId }),
-      date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      ...(selectedProvinceId && { provinceId: selectedProvinceId }),
+      ...(selectedOutletId && { outletId: selectedOutletId }),
+      ...(selectedStaffId && { staffId: selectedStaffId }),
+      startDate: dateRange[0]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      endDate: dateRange[1]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
       page: page - 1,
       size: pageSize,
+      refreshKey, // ép hook refetch
     };
-  }, [selectedProvinceId, selectedOutletId, selectedStaffId, selectedDate, page, pageSize]);
+  }, [selectedProvinceId, selectedOutletId, selectedStaffId, dateRange, page, pageSize, refreshKey]);
 
   const { data, isFetching } = useAttendanceReport(queryParams);
 
@@ -73,7 +88,16 @@ const SalesSection = () => {
         </div>
       )
     },
-
+    {
+      title: "Ngày",
+      fixed: "left",
+      width: 200,
+      render: (_: any, record: any) => (
+        <div>
+          <div><b>{record.startTime ? dayjs(record.startTime).format("DD/MM/YYYY") : ""}</b></div>
+        </div>
+      )
+    },
     {
       title: "Ca",
       fixed: "left",
@@ -176,14 +200,13 @@ const SalesSection = () => {
             (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
           }
         />
-
-        <DatePicker
-          className="w-full md:w-1/4"
-          value={selectedDate}
-          onChange={handleDateChange}
-          defaultValue={dayjs()}
+        <RangePicker
+          className="w-full md:w-2/5" // Adjust width as per your design
+          onChange={handleDateRangeChange} // Update the state on change
+          defaultValue={[dayjs(), dayjs()]} // Default date range is today
+          showTime={false} // Hide time selection
+          value={dateRange} // Controlled input using state
         />
-
         <Button icon={<DownloadOutlined />} type="primary" onClick={handleExportExcel}>
           Export Excel
         </Button>
