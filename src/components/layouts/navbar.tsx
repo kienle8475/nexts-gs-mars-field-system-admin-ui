@@ -60,6 +60,13 @@ export const Navbar = () => {
           },
           {
             id: nanoid(),
+            name: "Sampling",
+            slug: "/sampling",
+            icon: IoMdGift,
+            subitems: [],
+          },
+          {
+            id: nanoid(),
             name: "Rời vị trí",
             slug: "/leave",
             icon: MdOutlineLocationOff,
