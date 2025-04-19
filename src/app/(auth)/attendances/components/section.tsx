@@ -205,6 +205,17 @@ const AttendanceSection = () => {
               <div className="mt-1 flex gap-2">
                 {att.checkinImage && (
                   <img
+                    src={`${IMAGE_HOST}${att.staff?.profileImageReport}`}
+                    alt="checkin"
+                    className="h-10 w-10 cursor-pointer rounded bg-white object-cover"
+                    onClick={() => {
+                      setImageLoading(true);
+                      setPreviewImage(`${IMAGE_HOST}${att.staff?.profileImageReport}`);
+                    }}
+                  />
+                )}
+                {att.checkinImage && (
+                  <img
                     src={`${IMAGE_HOST}${att.checkinImage}`}
                     alt="checkin"
                     className="h-10 w-10 cursor-pointer rounded bg-white object-cover"
