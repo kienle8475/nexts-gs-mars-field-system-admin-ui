@@ -229,12 +229,12 @@ const AttendanceSection = () => {
                         }
 
                         try {
-                          await deleteAttendance(att.id);
-                          message.success("Xoá attendance thành công.");
+                          await useDeleteAttendance(att.id);
+                          message.success("Xoá Check-in thành công.");
                           setRefreshKey((prev) => prev + 1);
                         } catch (err) {
                           console.error(err);
-                          message.error("Xoá attendance thất bại.");
+                          message.error("Xoá Check-in thất bại.");
                         }
                       },
                       okText: "Xoá",
