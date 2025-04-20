@@ -13,6 +13,13 @@ import { generatePptxExport, watchExportJob } from "@/services/export/pptx.expor
 const IMAGE_HOST = process.env.NEXT_PUBLIC_IMAGE_HOST;
 const { RangePicker } = DatePicker;
 
+import { ExclamationCircleOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Input, message } from "antd";
+import { deleteAttendance, useDeleteAttendance } from "@/services/attendance/delete";
+
+const VERIFY_TEXT = "151257f7-b1f3-4ef2-a9e9-84f65e71d790";
+
+
 const AttendanceSection = () => {
   useAutoPingPong(5000); // auto ping pong every 5 seconds
 
@@ -196,7 +203,47 @@ const AttendanceSection = () => {
       render: (_: any, record: { attendances: any }) => (
         <div className="flex flex-wrap gap-3">
           {(record.attendances || []).map((att: any) => (
-            <div key={att.id} className="rounded-md border bg-gray-50 p-2 shadow-sm">
+            <div key={att.id} className="relative rounded-md border bg-gray-50 p-2 shadow-sm">
+              {/* Nút Xoá - góc trên bên phải */}
+              <div className="absolute top-1 right-1">
+                <DeleteOutlined
+                  className="text-red-500 hover:text-red-700 cursor-pointer"
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Xác nhận xoá Check-in?",
+                      icon: <ExclamationCircleOutlined />,
+                      content: (
+                        <div>
+                          <p>Nhập <b>MÃ BÍ MẬT</b> để xác nhận xoá:</p>
+                          <p>Việc xóa sẽ không thể khôi phục lại dữ liệu. Các báo cáo Sales, OOS, Sampling cũng sẽ bị ảnh hưởng.</p>
+                          <Input id={`verify-input-${att.id}`} placeholder="Nhập chuỗi xác nhận" />
+                        </div>
+                      ),
+                      onOk: async () => {
+                        const inputValue = (
+                          document.getElementById(`verify-input-${att.id}`) as HTMLInputElement
+                        )?.value;
+                        if (inputValue !== VERIFY_TEXT) {
+                          message.error("Chuỗi xác nhận không đúng.");
+                          return Promise.reject();
+                        }
+
+                        try {
+                          await deleteAttendance(att.id);
+                          message.success("Xoá attendance thành công.");
+                          setRefreshKey((prev) => prev + 1);
+                        } catch (err) {
+                          console.error(err);
+                          message.error("Xoá attendance thất bại.");
+                        }
+                      },
+                      okText: "Xoá",
+                      cancelText: "Huỷ",
+                    });
+                  }}
+                />
+              </div>
+
               <div className="text-sm font-semibold">{att.staff?.fullName}</div>
               <div className="text-xs text-gray-500">
                 🕘 {att.checkinTime ? dayjs(att.checkinTime).format("HH:mm DD/MM") : ""} →{" "}
