@@ -205,9 +205,9 @@ const AttendanceSection = () => {
           {(record.attendances || []).map((att: any) => (
             <div key={att.id} className="relative rounded-md border bg-gray-50 p-2 shadow-sm">
               {/* Nút Xoá - góc trên bên phải */}
-              <div className="absolute top-1 right-1">
+              <div className="absolute top-1.5 right-1.5 z-10">
                 <DeleteOutlined
-                  className="text-red-500 hover:text-red-700 cursor-pointer"
+                  className="text-red-500 hover:text-red-700 cursor-pointer text-sm"
                   onClick={() => {
                     Modal.confirm({
                       title: "Xác nhận xoá Check-in?",
