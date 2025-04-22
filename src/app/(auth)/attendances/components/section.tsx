@@ -459,7 +459,7 @@ const AttendanceSection = () => {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
               <div className="flex justify-center mb-4">
-                <svg className="animate-spin h-6 w-6 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-6 w-6 text-sky-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
                     cx="12"
@@ -477,7 +477,7 @@ const AttendanceSection = () => {
               </div>
               <p className="text-lg font-medium mb-2">Đang tạo file PowerPoint...</p>
               <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-orange-600 animate-pulse w-1/2"></div>
+                <div className="h-full bg-sky-600 animate-pulse w-1/2"></div>
               </div>
               <p className="text-sm text-gray-500 mt-2">Vui lòng đợi trong giây lát.</p>
             </div>

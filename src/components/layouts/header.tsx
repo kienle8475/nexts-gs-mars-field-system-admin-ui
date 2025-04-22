@@ -47,8 +47,8 @@ export const Header = () => {
     <div className="fixed left-0 right-0 top-0 z-[999] flex h-[60px] items-center justify-between bg-white shadow-sm">
       <div className="flex h-full w-[250px] items-center justify-start px-6 py-2">
         <Image
-          src={"/images/gs-logo.png"}
-          alt="gs-logo"
+          src={"/images/gc-logo.png"}
+          alt="gc-logo"
           width={500}
           height={150}
           className="h-full w-auto object-contain"
