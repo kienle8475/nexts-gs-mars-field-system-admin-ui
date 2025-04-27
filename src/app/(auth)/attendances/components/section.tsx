@@ -203,7 +203,7 @@ const AttendanceSection = () => {
       render: (_: any, record: { attendances: any }) => (
         <div className="flex flex-wrap gap-3">
           {(record.attendances || []).map((att: any) => (
-            <div key={att.id} className="relative rounded-md border bg-gray-50 p-2 shadow-sm">
+            <div key={att.id} className="relative rounded-md border bg-gray-50 p-2 pr-8 shadow-sm">
               {/* Nút Xoá - góc trên bên phải */}
               <div className="absolute top-1.5 right-1.5 z-10">
                 <DeleteOutlined
@@ -229,7 +229,7 @@ const AttendanceSection = () => {
                         }
 
                         try {
-                          await useDeleteAttendance(att.id);
+                          await deleteAttendance(att.id);
                           message.success("Xoá Check-in thành công.");
                           setRefreshKey((prev) => prev + 1);
                         } catch (err) {
