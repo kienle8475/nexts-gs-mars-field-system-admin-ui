@@ -28,7 +28,6 @@ const staffSection = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-
   const queryParams = useMemo(() => {
     return {
       page: page - 1,
@@ -52,7 +51,8 @@ const staffSection = () => {
       title: "Tài khoản",
       dataIndex: ["account", "username"],
       key: "username",
-    }, {
+    },
+    {
       title: "Ảnh Profile",
       dataIndex: "profileImage",
       render: (url: string) => (
@@ -60,13 +60,13 @@ const staffSection = () => {
           <img
             src={`${IMAGE_HOST}${url}`}
             alt="Ảnh profile"
-            className="w-10 h-10 rounded-full cursor-pointer bg-white"
+            className="h-10 w-10 cursor-pointer rounded-full bg-white"
             onClick={() => {
               setPreviewImage(`${IMAGE_HOST}${url}`);
               setImageLoading(true);
             }}
             onError={(e) => {
-              e.currentTarget.src = "/images/default-avatar.png";
+              e.currentTarget.src = "/admin/images/default-avatar.png";
               e.currentTarget.style.backgroundColor = "white";
             }}
           />
@@ -76,28 +76,26 @@ const staffSection = () => {
     {
       title: "Ngày đào tạo",
       dataIndex: "trainingDate",
-      render: (trainingDate: string) => trainingDate ? dayjs(trainingDate).format("DD/MM/YYYY") : "",
+      render: (trainingDate: string) =>
+        trainingDate ? dayjs(trainingDate).format("DD/MM/YYYY") : "",
     },
     {
       title: "Ngày bắt đầu",
       dataIndex: "startDate",
-      render: (startDate: string) => startDate ? dayjs(startDate).format("DD/MM/YYYY") : "",
+      render: (startDate: string) => (startDate ? dayjs(startDate).format("DD/MM/YYYY") : ""),
     },
     {
       title: "Ngày thử việc",
       dataIndex: "passProbationDate",
-      render: (passProbationDate: string) => passProbationDate ? dayjs(passProbationDate).format("DD/MM/YYYY") : "",
+      render: (passProbationDate: string) =>
+        passProbationDate ? dayjs(passProbationDate).format("DD/MM/YYYY") : "",
     },
     {
       title: "Edit",
       key: "edit",
       render: (_: any, record: StaffProfile) => (
         <Tooltip title="Edit">
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => handleOpenModal(record)}
-          />
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleOpenModal(record)} />
         </Tooltip>
       ),
     },
@@ -140,9 +138,9 @@ const staffSection = () => {
       >
         <Spin spinning={imageLoading}>
           <img
-            src={previewImage || ''}
+            src={previewImage || ""}
             alt="Preview"
-            className="w-full h-auto object-contain"
+            className="h-auto w-full object-contain"
             onLoad={() => setImageLoading(false)}
           />
         </Spin>

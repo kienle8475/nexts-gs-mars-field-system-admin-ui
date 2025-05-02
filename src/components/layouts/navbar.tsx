@@ -25,12 +25,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { css } from "@emotion/react";
 import { Icons } from "../elements/icons";
 import { IoMdGift, IoMdTabletLandscape, IoMdTabletPortrait } from "react-icons/io";
+import { BarChartOutlined, DashboardOutlined, LineChartOutlined } from "@ant-design/icons";
 
 type MenuItem = {
   id: string;
   name: string;
   slug?: string;
-  icon: (props: IconBaseProps) => JSX.Element | any;
+  icon: any;
   subitems: {
     id: string;
     name: string;
@@ -51,6 +52,13 @@ export const Navbar = () => {
       {
         name: "Báo cáo",
         items: [
+          {
+            id: nanoid(),
+            name: "Dashboard",
+            slug: "/dashboard",
+            icon: LineChartOutlined,
+            subitems: [],
+          },
           {
             id: nanoid(),
             name: "Chấm công",

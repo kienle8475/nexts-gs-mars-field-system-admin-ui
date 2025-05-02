@@ -63,7 +63,7 @@ const LoginSection = () => {
     (async () => {
       try {
         await authLoginMutation?.mutateAsync({ ...formData });
-      } catch (error) { }
+      } catch (error) {}
     })();
   };
 
@@ -78,8 +78,8 @@ const LoginSection = () => {
       <div className="mx-4 max-h-[calc(100vh-32px)] w-full overflow-auto rounded-lg border border-border-low-emp bg-white p-8 sm:w-fit sm:min-w-[500px]">
         <div className="mx-auto mb-4 mt-2 max-w-[250px] p-4">
           <Image
-            src={"/images/gs-logo.png"}
-            alt="gs-logo"
+            src={"/admin/images/vinamilk-logo.jpg"}
+            alt="vinamilk-logo"
             width={500}
             height={150}
             className="object-contain"

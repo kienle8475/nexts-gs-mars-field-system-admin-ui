@@ -10,8 +10,8 @@ const ProvidersDynamic = dynamic(() => import("@/components/layouts/providers"),
 });
 
 export const metadata: Metadata = {
-  title: "MARS Field Service",
-  description: "MARS Field Service",
+  title: "Vinamilk Field Service",
+  description: "Vinamilk Field Service",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
           "bg-gray--8 font-inter text-[14px] text-text-high-emp antialiased",
         )}
       >
-        <NextTopLoader color="#f68b1e" showSpinner={false} />
+        <NextTopLoader color="#1d35e0" showSpinner={false} />
         <ProvidersDynamic>{children}</ProvidersDynamic>
       </body>
     </html>

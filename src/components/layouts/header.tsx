@@ -2,6 +2,7 @@
 import { useAuthContext } from "@/contexts/auth.context";
 import { Dropdown, Flex, Menu } from "antd";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { MdLogout } from "react-icons/md";
 
@@ -43,17 +44,24 @@ const UserNavigation = () => {
 };
 
 export const Header = () => {
+  const router = useRouter();
+
   return (
     <div className="fixed left-0 right-0 top-0 z-[999] flex h-[60px] items-center justify-between bg-white shadow-sm">
-      <div className="flex h-full w-[250px] items-center justify-start px-6 py-2">
+      <button
+        className="flex h-full w-[250px] items-center justify-start px-6 py-2"
+        onClick={() => {
+          router.push("/dashboard");
+        }}
+      >
         <Image
-          src={"/images/gs-logo.png"}
-          alt="gs-logo"
+          src={"/admin/images/vinamilk-logo.jpg"}
+          alt="vinamilk-logo"
           width={500}
           height={150}
           className="h-full w-auto object-contain"
         />
-      </div>
+      </button>
 
       <div className="mr-5 h-full">
         <UserNavigation />

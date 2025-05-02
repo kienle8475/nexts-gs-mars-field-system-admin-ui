@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  basePath: "/admin",
+  assetPrefix: "/admin",
   images: {
     unoptimized: true,
     remotePatterns: [
