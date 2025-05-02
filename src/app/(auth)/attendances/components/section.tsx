@@ -19,9 +19,8 @@ import { deleteAttendance, useDeleteAttendance } from "@/services/attendance/del
 
 const VERIFY_TEXT = "151257f7-b1f3-4ef2-a9e9-84f65e71d790";
 
-
 const AttendanceSection = () => {
-  useAutoPingPong(5000); // auto ping pong every 5 seconds
+  // useAutoPingPong(5000); // auto ping pong every 5 seconds
 
   const [outletType] = useState<string>("BOTH");
   const [selectedOutletId, setSelectedOutletId] = useState<string>();
@@ -33,7 +32,7 @@ const AttendanceSection = () => {
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>();
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(dayjs());
   const [jobId, setJobId] = useState<number | null>(null);
-  const [status, setStatus] = useState<'IDLE' | 'PROCESSING' | 'DONE' | 'FAILED'>('IDLE');
+  const [status, setStatus] = useState<"IDLE" | "PROCESSING" | "DONE" | "FAILED">("IDLE");
   const [showPopup, setShowPopup] = useState(false);
   const [pptxDateModalVisible, setPptxDateModalVisible] = useState(false);
   const [pptxSelectedDate, setPptxSelectedDate] = useState<Dayjs | null>(null);
@@ -57,7 +56,15 @@ const AttendanceSection = () => {
       size: pageSize,
       refreshKey, // ép hook refetch
     };
-  }, [selectedProvinceId, selectedOutletId, selectedStaffId, dateRange, page, pageSize, refreshKey]);
+  }, [
+    selectedProvinceId,
+    selectedOutletId,
+    selectedStaffId,
+    dateRange,
+    page,
+    pageSize,
+    refreshKey,
+  ]);
 
   const { data, isFetching } = useAttendanceReport(queryParams);
 
@@ -71,15 +78,15 @@ const AttendanceSection = () => {
   // Handler for when the date range changes
   const handleDateRangeChange = (dates: [Dayjs | null, Dayjs | null] | null) => {
     if (dates && dates[0] && dates[1]) {
-      const newRange: [Dayjs, Dayjs] = [dates[0].startOf('day'), dates[1].endOf('day')];
+      const newRange: [Dayjs, Dayjs] = [dates[0].startOf("day"), dates[1].endOf("day")];
       setDateRange(newRange);
       setPage(1);
     } else {
       const today = dayjs();
-      const resetRange: [Dayjs, Dayjs] = [today.startOf('day'), today.endOf('day')];
+      const resetRange: [Dayjs, Dayjs] = [today.startOf("day"), today.endOf("day")];
       setDateRange(resetRange);
       setPage(1);
-      setRefreshKey((prev) => prev + 1)
+      setRefreshKey((prev) => prev + 1);
     }
   };
 
@@ -88,10 +95,10 @@ const AttendanceSection = () => {
 
     if (!start || !end) return;
 
-    if (!start.isSame(end, 'day')) {
+    if (!start.isSame(end, "day")) {
       Modal.warning({
-        title: 'Chỉ hỗ trợ xuất PowerPoint cho 1 ngày',
-        content: 'Vui lòng chọn một ngày cụ thể để tiếp tục.',
+        title: "Chỉ hỗ trợ xuất PowerPoint cho 1 ngày",
+        content: "Vui lòng chọn một ngày cụ thể để tiếp tục.",
         onOk: () => {
           setPptxSelectedDate(start); // gợi ý luôn ngày đầu tiên
           setPptxDateModalVisible(true); // mở modal chọn ngày
@@ -105,7 +112,7 @@ const AttendanceSection = () => {
 
   const proceedExportPPTX = async (date: Dayjs) => {
     try {
-      setStatus('PROCESSING');
+      setStatus("PROCESSING");
       setShowPopup(true);
 
       const id = await generatePptxExport({
@@ -120,24 +127,23 @@ const AttendanceSection = () => {
       const stopWatch = watchExportJob(
         id,
         () => {
-          setStatus('DONE');
+          setStatus("DONE");
           setShowPopup(false);
         },
         () => {
-          setStatus('FAILED');
+          setStatus("FAILED");
           setShowPopup(false);
-          alert('Xuất file thất bại.');
-        }
+          alert("Xuất file thất bại.");
+        },
       );
 
       return () => stopWatch();
     } catch (err) {
-      console.error('Lỗi xuất PowerPoint:', err);
-      setStatus('FAILED');
+      console.error("Lỗi xuất PowerPoint:", err);
+      setStatus("FAILED");
       setShowPopup(false);
     }
   };
-
 
   const handleExportExcel = async () => {
     try {
@@ -149,9 +155,9 @@ const AttendanceSection = () => {
         endDate: dateRange[1]?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
       });
     } catch (error) {
-      console.error('Export failed', error);
+      console.error("Export failed", error);
       console.log(error);
-      alert('Export failed');
+      alert("Export failed");
     }
   };
 
@@ -205,17 +211,22 @@ const AttendanceSection = () => {
           {(record.attendances || []).map((att: any) => (
             <div key={att.id} className="relative rounded-md border bg-gray-50 p-2 pr-8 shadow-sm">
               {/* Nút Xoá - góc trên bên phải */}
-              <div className="absolute top-1.5 right-1.5 z-10">
+              <div className="absolute right-1.5 top-1.5 z-10">
                 <DeleteOutlined
-                  className="text-red-500 hover:text-red-700 cursor-pointer text-sm"
+                  className="cursor-pointer text-sm text-red-500 hover:text-red-700"
                   onClick={() => {
                     Modal.confirm({
                       title: "Xác nhận xoá Check-in?",
                       icon: <ExclamationCircleOutlined />,
                       content: (
                         <div>
-                          <p>Nhập <b>MÃ BÍ MẬT</b> để xác nhận xoá:</p>
-                          <p>Việc xóa sẽ không thể khôi phục lại dữ liệu. Các báo cáo Sales, OOS, Sampling cũng sẽ bị ảnh hưởng.</p>
+                          <p>
+                            Nhập <b>MÃ BÍ MẬT</b> để xác nhận xoá:
+                          </p>
+                          <p>
+                            Việc xóa sẽ không thể khôi phục lại dữ liệu. Các báo cáo Sales, OOS,
+                            Sampling cũng sẽ bị ảnh hưởng.
+                          </p>
                           <Input id={`verify-input-${att.id}`} placeholder="Nhập chuỗi xác nhận" />
                         </div>
                       ),
@@ -315,7 +326,6 @@ const AttendanceSection = () => {
     },
   ];
 
-
   return (
     <section>
       <div>
@@ -393,11 +403,11 @@ const AttendanceSection = () => {
             type="default"
             danger
             variant="outlined"
-            disabled={status === 'PROCESSING'}
+            disabled={status === "PROCESSING"}
             icon={<DownloadOutlined />}
             onClick={handleExportPPTX}
           >
-            {status === 'PROCESSING' ? 'Đang xử lý...' : 'Export PowerPoint'}
+            {status === "PROCESSING" ? "Đang xử lý..." : "Export PowerPoint"}
           </Button>
         </div>
         <div className="p-6">
@@ -456,10 +466,15 @@ const AttendanceSection = () => {
           />
         </Modal>
         {showPopup && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white p-6 rounded-lg shadow-lg text-center w-80">
-              <div className="flex justify-center mb-4">
-                <svg className="animate-spin h-6 w-6 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="w-80 rounded-lg bg-white p-6 text-center shadow-lg">
+              <div className="mb-4 flex justify-center">
+                <svg
+                  className="h-6 w-6 animate-spin text-orange-600"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
                   <circle
                     className="opacity-25"
                     cx="12"
@@ -475,11 +490,11 @@ const AttendanceSection = () => {
                   ></path>
                 </svg>
               </div>
-              <p className="text-lg font-medium mb-2">Đang tạo file PowerPoint...</p>
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div className="h-full bg-orange-600 animate-pulse w-1/2"></div>
+              <p className="mb-2 text-lg font-medium">Đang tạo file PowerPoint...</p>
+              <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                <div className="h-full w-1/2 animate-pulse bg-orange-600"></div>
               </div>
-              <p className="text-sm text-gray-500 mt-2">Vui lòng đợi trong giây lát.</p>
+              <p className="mt-2 text-sm text-gray-500">Vui lòng đợi trong giây lát.</p>
             </div>
           </div>
         )}

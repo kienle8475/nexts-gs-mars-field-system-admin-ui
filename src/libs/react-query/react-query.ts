@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { PromiseValue } from "type-fest";
+import { PromiseValue } from "@/types";
 import {
   QueryClient,
   UseQueryOptions,

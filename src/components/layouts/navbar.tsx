@@ -5,7 +5,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { IconBaseProps } from "react-icons/lib";
-import { MdLocationOn, MdAccountCircle, MdOutlineCalendarToday, MdShoppingCart, MdInventory, MdOutlineInventory2, MdOutlineShoppingCart, MdOutlineLocationOff, MdOutlineAccountCircle, MdOutlineStore, MdOutlineReport, MdOutlineAir, MdContentPaste } from "react-icons/md";
+import {
+  MdLocationOn,
+  MdAccountCircle,
+  MdOutlineCalendarToday,
+  MdShoppingCart,
+  MdInventory,
+  MdOutlineInventory2,
+  MdOutlineShoppingCart,
+  MdOutlineLocationOff,
+  MdOutlineAccountCircle,
+  MdOutlineStore,
+  MdOutlineReport,
+  MdOutlineAir,
+  MdContentPaste,
+} from "react-icons/md";
 import { useControllableState } from "@/hooks/use-controllable-state";
 import { motion, AnimatePresence } from "framer-motion";
 import { css } from "@emotion/react";
@@ -16,7 +30,7 @@ type MenuItem = {
   id: string;
   name: string;
   slug?: string;
-  icon: (props: IconBaseProps) => JSX.Element;
+  icon: (props: IconBaseProps) => JSX.Element | any;
   subitems: {
     id: string;
     name: string;
