@@ -6,11 +6,8 @@ import { CheckCircleTwoTone, DownloadOutlined } from "@ant-design/icons";
 import dayjs, { Dayjs } from "dayjs";
 import { OutletOption, useOutletsByProvince } from "@/services/outlet/list-option";
 import { ProfileOption, useStaffProfileOptions } from "@/services/profile/list-staff-option";
-import { useAttendanceReport } from "@/services/attendance/list";
-import { ProvinceOption } from "@/services/province/list-option";
-import { ColumnType } from "antd/es/table";
 import { useStaffLeaveReport } from "@/services/staff-leave/list";
-
+import { exportStaffLeaveExcel } from "@/services/export/staff-leave.export";
 
 const LeaveSection = () => {
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>();
@@ -39,8 +36,11 @@ const LeaveSection = () => {
   ];
 
   // === Gọi API outlet dựa vào selectedProvince ===
-  const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(Number(selectedProvinceId));
-  const { data: staffProfileOptions = [], isLoading: staffProfileLoading } = useStaffProfileOptions();
+  const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(
+    Number(selectedProvinceId),
+  );
+  const { data: staffProfileOptions = [], isLoading: staffProfileLoading } =
+    useStaffProfileOptions();
 
   const queryParams = useMemo(() => {
     return {
@@ -80,8 +80,12 @@ const LeaveSection = () => {
       title: "Thời gian kết thúc",
       dataIndex: "endTime",
       render: (text: string) => {
-        return text !== null ? dayjs(text).format("HH:mm DD/MM/YYYY") : <Tag color="red">Đang rời vị trí</Tag>;
-      }
+        return text !== null ? (
+          dayjs(text).format("HH:mm DD/MM/YYYY")
+        ) : (
+          <Tag color="red">Đang rời vị trí</Tag>
+        );
+      },
     },
     {
       title: "Lý do",
@@ -94,8 +98,20 @@ const LeaveSection = () => {
     {
       title: "Ghi chú",
       dataIndex: "note",
-    }
+    },
   ];
+
+  const handleExportExcel = async () => {
+    try {
+      await exportStaffLeaveExcel({
+        date: selectedDate?.format("YYYY-MM-DD") || dayjs().format("YYYY-MM-DD"),
+      });
+    } catch (error) {
+      console.error("Export failed", error);
+      console.log(error);
+      alert("Export failed");
+    }
+  };
 
   return (
     <section>
@@ -115,7 +131,6 @@ const LeaveSection = () => {
           ]}
         />
 
-
         {/* Select Staff */}
         <Select
           showSearch
@@ -130,7 +145,7 @@ const LeaveSection = () => {
             value: o.id,
           }))}
           filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
         />
 
@@ -148,7 +163,7 @@ const LeaveSection = () => {
             value: o.id,
           }))}
           filterOption={(input, option) =>
-            (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+            (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
           }
         />
 
@@ -159,15 +174,21 @@ const LeaveSection = () => {
           defaultValue={dayjs()}
         />
       </div>
+      <Button
+        type="default"
+        variant="outlined"
+        icon={<DownloadOutlined />}
+        onClick={handleExportExcel}
+      >
+        Export Excel
+      </Button>
 
       <div className="p-6">
         <Spin spinning={isFetching}>
           <Table
             dataSource={data?.content || []}
             rowKey={(record) => record.id}
-            rowClassName={(record) =>
-              record.endTime !== null ? "" : "bg-red-50"
-            }
+            rowClassName={(record) => (record.endTime !== null ? "" : "bg-red-50")}
             pagination={{
               current: page,
               pageSize: pageSize,
