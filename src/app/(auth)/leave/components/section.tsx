@@ -173,15 +173,16 @@ const LeaveSection = () => {
           onChange={handleDateChange}
           defaultValue={dayjs()}
         />
+
+        <Button
+          type="default"
+          variant="outlined"
+          icon={<DownloadOutlined />}
+          onClick={handleExportExcel}
+        >
+          Export Excel
+        </Button>
       </div>
-      <Button
-        type="default"
-        variant="outlined"
-        icon={<DownloadOutlined />}
-        onClick={handleExportExcel}
-      >
-        Export Excel
-      </Button>
 
       <div className="p-6">
         <Spin spinning={isFetching}>
