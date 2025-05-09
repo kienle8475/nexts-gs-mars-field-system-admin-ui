@@ -17,7 +17,6 @@ export const updateWorkingShift = async (id: number, payload: UpdateWorkingShift
         "Content-Type": "multipart/form-data",
       },
     });
-
     return response.data;
   } catch (error: any) {
     console.error("Lỗi khi cập nhật Working Shift:", error?.response?.data || error);

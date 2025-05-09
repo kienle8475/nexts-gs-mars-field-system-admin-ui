@@ -35,7 +35,6 @@ export const useSaleProfileOptions = () => {
   return useQuery<ProfileOption[], Error>({
     queryKey: ["profiles", "sales", "options"],
     queryFn: getSaleProfileOptions,
-    staleTime: 5 * 60 * 1000,
     retry: 1,
     onError: (err) => {
       console.error("useSaleProfileOptions error:", err.message);

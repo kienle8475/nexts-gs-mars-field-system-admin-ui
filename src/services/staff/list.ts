@@ -46,7 +46,6 @@ export const useStaffProfiles = (params: StaffProfileQueryParams) => {
   return useQuery<StaffProfileResponse, Error>({
     queryKey: ["staffProfiles", params],
     queryFn: () => getStaffProfiles(params),
-    staleTime: 1000 * 60 * 1,
     keepPreviousData: true,
     onError: (error) => {
       console.error("Error fetching staff profiles:", error.message);

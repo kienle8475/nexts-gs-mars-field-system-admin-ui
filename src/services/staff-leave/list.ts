@@ -50,7 +50,6 @@ export const useStaffLeaveReport = (params: StaffLeaveFilterParams) => {
     queryKey: ["staff-leave", params],
     queryFn: () => getStaffLeaveReport(params),
     keepPreviousData: true,
-    staleTime: 1000 * 60 * 1,
     onError: (err) => {
       console.error("useStaffLeaveReport error:", err.message);
     },

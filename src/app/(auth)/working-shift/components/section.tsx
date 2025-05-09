@@ -1,15 +1,29 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Button, DatePicker, Modal, Pagination, Select, Spin, Table, Tag, Tooltip, Form, Input, Space, message } from "antd";
+import {
+  Button,
+  DatePicker,
+  Modal,
+  Pagination,
+  Select,
+  Spin,
+  Table,
+  Tag,
+  Tooltip,
+  Form,
+  Input,
+  Space,
+  message,
+} from "antd";
 import dayjs, { Dayjs } from "dayjs";
 import { OutletOption, useOutletsByProvince } from "@/services/outlet/list-option";
 import { ProvinceOption, useAllProvincesOptions } from "@/services/province/list-option";
 import { ColumnsType, ColumnType } from "antd/es/table";
-import { useStaffLeaveReport } from "@/services/staff-leave/list";
 import { useWorkingShifts, WorkingShiftItem } from "@/services/working-shift/list";
 import { updateWorkingShift } from "@/services/working-shift/update";
 import { EditOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { useQueryClient } from "react-query";
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
@@ -31,11 +45,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   ...restProps
 }) => {
   const inputNode =
-    inputType === "datetime" ? (
-      <DatePicker showTime format="YYYY-MM-DD HH:mm" />
-    ) : (
-      <Input />
-    );
+    inputType === "datetime" ? <DatePicker showTime format="YYYY-MM-DD HH:mm" /> : <Input />;
 
   return (
     <td {...restProps}>
@@ -55,12 +65,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 const WorkingShiftSection = () => {
-
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>();
   const [selectedOutletId, setSelectedOutletId] = useState<string>();
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
   const [data, setData] = useState<WorkingShiftItem[]>([]);
   const [editingKey, setEditingKey] = useState<number | null>(null);
+  const queryClient = useQueryClient();
 
   const queryParams = useMemo(() => {
     return {
@@ -71,17 +81,18 @@ const WorkingShiftSection = () => {
   }, [selectedProvinceId, selectedOutletId, selectedDate]);
   const { data: workingShifts, isFetching, refetch } = useWorkingShifts(queryParams);
   // === Gọi API outlet dựa vào selectedProvince ===
-  const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(Number(selectedProvinceId));
+  const { data: outletOptions = [], isLoading: outletLoading } = useOutletsByProvince(
+    Number(selectedProvinceId),
+  );
   const { data: provinceOptions = [], isLoading: provinceLoading } = useAllProvincesOptions();
 
   useEffect(() => {
-    if (workingShifts) {
-      setData([...workingShifts]);
+    if (workingShifts && editingKey === null) {
+      setData(workingShifts.map((item) => ({ ...item })));
     }
-  }, [workingShifts]);
+  }, [workingShifts, editingKey]);
 
   const [form] = Form.useForm();
-
 
   const isEditing = (record: WorkingShiftItem) => record.id === editingKey;
 
@@ -101,28 +112,17 @@ const WorkingShiftSection = () => {
   const save = async (id: number) => {
     try {
       const row = await form.validateFields();
-      const newData = [...data];
-      const index = newData.findIndex((item) => item.id === id);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-          startTime: row.startTime.toISOString(),
-          endTime: row.endTime.toISOString(),
-        });
-        setData(newData);
-        setEditingKey(null);
-        updateWorkingShift(id, {
-          name: row.name,
-          startTime: row.startTime.toISOString(),
-          endTime: row.endTime.toISOString(),
-        });
-        message.success("Cập nhật thành công");
-        refetch();
-      }
-    } catch (errInfo) {
-      message.success("Lỗi khi cập nhật ca làm");
+      await updateWorkingShift(id, {
+        name: row.name,
+        startTime: row.startTime,
+        endTime: row.endTime,
+      });
+
+      message.success("Cập nhật thành công");
+      setEditingKey(null);
+      queryClient.invalidateQueries(["workingShifts"]);
+    } catch (err) {
+      message.error("Lỗi khi cập nhật ca làm");
     }
   };
 
@@ -169,14 +169,19 @@ const WorkingShiftSection = () => {
             </Button>
           </Space>
         ) : (
-          <><Button
-            icon={<EditOutlined />}
-            type="link"
-            disabled={editingKey !== null || record.checkedIn}
-            onClick={() => edit(record)}
-          >
-            Sửa
-          </Button><Tooltip title={record.checkedIn ? "Ca đã được check in" : ""}><InfoCircleOutlined /></Tooltip></>
+          <>
+            <Button
+              icon={<EditOutlined />}
+              type="link"
+              disabled={editingKey !== null || record.checkedIn}
+              onClick={() => edit(record)}
+            >
+              Sửa
+            </Button>
+            <Tooltip title={record.checkedIn ? "Ca đã được check in" : ""}>
+              <InfoCircleOutlined />
+            </Tooltip>
+          </>
         );
       },
     },
@@ -185,16 +190,16 @@ const WorkingShiftSection = () => {
   const mergedColumns = columns.map((col) =>
     col.editable
       ? {
-        ...col,
-        onCell: (record: WorkingShiftItem) => ({
-          record,
-          inputType: col.dataIndex === "name" ? "text" : "datetime",
-          dataIndex: col.dataIndex!,
-          title: col.title as string,
-          editing: isEditing(record),
-        }),
-      }
-      : col
+          ...col,
+          onCell: (record: WorkingShiftItem) => ({
+            record,
+            inputType: col.dataIndex === "name" ? "text" : "datetime",
+            dataIndex: col.dataIndex!,
+            title: col.title as string,
+            editing: isEditing(record),
+          }),
+        }
+      : col,
   );
 
   return (

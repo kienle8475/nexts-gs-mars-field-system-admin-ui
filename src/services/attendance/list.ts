@@ -54,7 +54,6 @@ export const useAttendanceReport = (params: AttendanceFilterParams) => {
     queryKey: ["attendanceReport", params],
     queryFn: () => getAttendanceReport(params),
     keepPreviousData: true,
-    staleTime: 1000 * 60 * 1,
     onError: (err) => {
       console.error("useAttendanceReport error:", err.message);
     },

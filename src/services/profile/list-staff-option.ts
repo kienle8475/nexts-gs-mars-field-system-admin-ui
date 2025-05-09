@@ -35,7 +35,6 @@ export const useStaffProfileOptions = () => {
   return useQuery<ProfileOption[], Error>({
     queryKey: ["profiles", "staff", "options"],
     queryFn: getStaffProfileOptions,
-    staleTime: 5 * 60 * 1000,
     retry: 1,
     onError: (err) => {
       console.error("useStaffProfileOptions error:", err.message);
